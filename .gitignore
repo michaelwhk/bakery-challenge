@@ -1,0 +1,11 @@
+# Ignore bundler config.
+/.bundle
+
+
+# Ignore all logfiles and tempfiles.
+/log/*
+!/log/.keep
+/tmp
+
+# Ignore Mac system file
+.DS_Store
