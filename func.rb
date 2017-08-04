@@ -1,19 +1,13 @@
+#!/usr/bin/ruby
+
 # define current products
-@products = {
-"VS5" =>
-      { 3 => 6.99,
-        5 => 8.99 },
-"MB11" =>
-      { 2 => 9.95,
-        5 => 16.95,
-        8 => 24.95
-		  },
- "CF" =>
-      { 3 => 5.95,
-        5 => 9.95,
-        9 => 19.99
-      }
-}
+
+$sum = 0
+
+def checkInput(num,code)
+  product_pack_list = packOptions(@products,code)
+  return num >= product_pack_list.min.to_i
+end
 
 def packOptions(products,code)
   return products[code].keys
@@ -32,7 +26,6 @@ def tryPrepackList(list,total,code)
       # reminder & descList[1] == 0
       if reminder_of_bigger_pack % descList[1] == 0
         small_amount = reminder_of_bigger_pack / descList[1]
-
         printIfExist(bigger_amount, descList.first, code)
         # puts "#{bigger_amount} x @#{descList.first} | 1"
         printIfExist(small_amount, descList[1], code)
@@ -73,7 +66,10 @@ end
 
 
 def printIfExist(amount, packs, code)
+  price = @products[code][packs]
   if amount > 0
-    puts "#{amount} x @#{packs} $ #{@products[code][packs]}"
+    subtotal = amount * price
+    $sum += subtotal
+    puts "#{amount} x @#{packs} $#{@products[code][packs]}"
   end
 end
