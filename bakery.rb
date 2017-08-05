@@ -1,13 +1,14 @@
 #!/usr/bin/ruby
 require './func'
 require './datasource'
-# print "\n>Please input how many do you want. You can only input number, all symbols will be removed\n"
-# qty = gets
-# remove characters or symbols
-# qty = qty.gsub!(/\D/, "").to_i
+
+print "\n>Please input how many do you want. You can only input number, all symbols will be removed\n"
+qty = gets
+# lmite only numbers
+qty = qty.gsub!(/\D/, "").to_i
 
 # user feedback display for number input
-# puts "You input: #{qty}"
+puts "You input: #{qty}"
 
 #
 # print "\n>Please input item code.\n"
@@ -19,31 +20,27 @@ require './datasource'
 # puts "You input: #{code}\n"
 
 code = "MB11"
-total = 14
-# packs = [5,3]
-packs = [8,5,2]
+total = qty
+
+# packs = [8,5,2]
 # packs = [9,5,3]
-# print "divmod = #{divmod(total,packs)} \n"
-print "moddiv = #{lastModResult(total,packs)} \n"
-print "validMaxPack? = #{validMaxPack?(total,packs)} \n"
+totalPackList = packOptions(@products,code)
+packs = [5,3]
+# print "moddiv = #{lastModResult(total,packs)} \n"
+# print "validMaxPack? = #{validMaxPack?(total,packs)} \n"
 # print "removeMaxPack = #{removeMaxPack(packs)} \n"
 puts "------result-------"
-# print "#{removeMaxPack([5,2])}"
-results(total,packs)
-print "#{$num}"
+if checkInput(qty, code)
+  # if qty is enought
+  if results(total,packs)
+    print "> #{$num}\n"
+  else
+    print "Oops, it seems your are in a special request we cannot sell it by prepack \n"
+  end
 
-
-
-# if checkInput(qty, code)
-#   #if qty is enought
-#   # list = packOptions(@products,code)
-#   # puts validPack?(qty,list)
-#   # packResult(qty,list,code)
-#   # tryPrepackList(list, qty, code)
-#   # puts "#{qty} x #{code} = $#{$sum.round(2)}"
-# else
-#   puts "please buy more"
-# end
+else
+  puts "please buy more"
+end
 
 
 

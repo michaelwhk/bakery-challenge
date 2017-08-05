@@ -3,6 +3,11 @@ VS5_PACK = Array[3,5]
 MB11_PACK = Array[2,5,8]
 CF_PACK = Array[3,5,9]
 
+# expected result
+VS5_RESULT = [0,2]
+MB11_RESULT = [3,0,1]
+CF_RESULT = [1,2,0]
+
 def testPrepack (nums,packs,total)
   # if the member of nums and packs mismatched
   if nums.count != packs.count
