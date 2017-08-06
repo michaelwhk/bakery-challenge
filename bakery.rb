@@ -17,18 +17,12 @@ code.upcase!.chomp!
 if validCode?(code)
   puts "You were input: #{code}"
   total = qty
-  packList = prePackList(@products,code)
+  pack_list = prePackList(PRODUCTS,code)
   puts "------result-------"
   if checkInput(total, code)
-    # if qty is enought
-    if results(total,packList)
-      printResult(optimizeResult(packList),code, packList)
-      # puts "#{optimizeResult(packs)}"
-    else
-      print "Oops, it seems your are in a special request we cannot sell it by prepack \n"
-    end
+      printResult(results(total,pack_list),code,pack_list)
   else
-    puts "Please buy more"
+      puts "Please buy more"
   end
 else
   puts "> Not a valid code, Please try again"
