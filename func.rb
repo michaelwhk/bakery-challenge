@@ -33,19 +33,49 @@ def removeMaxPack(packs)
 end
 
 def checkInput(num,code)
-  product_pack_list = packOptions(@products,code)
+  product_pack_list = prePackList(@products,code)
   return num >= product_pack_list.min.to_i
 end
 
-def packOptions(products,code)
-  return products[code].keys
+def prePackList(products,code)
+  return products[code].keys.sort { |a, b| b <=> a }
+end
+
+def canRollback?(reminder,packs,p,i)
+  #余数小于除数则需要从上一位补位 roll back last pack num
+  # rollback conddition
+  # can be mod if rollback from last pack
+  beModIfRollBack = (reminder + packs[i - 1]) % p == 0
+  # reminder less than divider and last pack are not times of current pack
+  lessAndNotModByLastPack = reminder < p && (packs[i-1] % p != 0)
+
+  if beModIfRollBack or lessAndNotModByLastPack
+    true
+  else
+    false
+  end
+end
+
+def printResult(result = $num, code)
+  sum = 0
+  count = 0
+  result.reverse!.each_with_index do |r,i|
+    count += r
+    sum += r * @products[code].values[i]
+    puts "#{r} x @#{@products[code].keys[i]}, $#{@products[code].values[i]}"
+  end
+  puts "Total: #{count}, #{sum}"
 end
 
 
 def results(num,packs)
   currentPackList = packs
   reminder = num
+
   packs.each_with_index do |p,i|
+
+    cannotRollback = i <= 0 || $num[i - 1] <= 0
+
     if validMaxPack?(reminder,currentPackList)
       # 能被当前 pack list 中所有数正好除尽
       $num << reminder / p
@@ -54,28 +84,17 @@ def results(num,packs)
       reminder = reminder % p
       # print ">2 after reminder = #{reminder} in TRUE \n"
     else
-      # 保证不是第一位或者上一位能够借位
-      # 借位逻辑
-      unless (i <= 0) || ($num[i - 1] <= 0)
-        if (reminder + packs[i - 1]) % p == 0
-          reminder = reminder + packs[i - 1]
-          $num[i - 1] -= 1
-        elsif reminder < p   #余数小于除数则需要从上一位补位 roll back last pack num
+      unless cannotRollback
+        if canRollback?(reminder,packs,p,i)
           reminder = reminder + packs[i - 1]
           $num[i - 1] -= 1
         end
       end
-
       $num << reminder / p    # 当前 Pack 的个数注入到数组中
       reminder = reminder % p
       currentPackList = removeMaxPack(currentPackList)
     end
   end
-
-  # if it could use prepack or not
-  if reminder > 0
-    return false
-  else
-    return true
-  end
+  # final reminder if it could use prepack or not
+  return reminder.zero?
 end
