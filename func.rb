@@ -3,6 +3,30 @@
 # Result recorder
 $num = []
 
+TEST_DATA=[ \
+	{total:10,packs:[5,3],numpacks:[2,0]}, \
+	{total:14,packs:[8,5,2],numpacks:[1,0,3]}, \
+	{total:13,packs:[9,5,3],numpacks:[0,2,1]}, \
+	{total:34,packs:[20,16,8,5,2],numpacks:[0,2,0,0,1]}, \
+{total:27,packs:[13,8,5,2],numpacks:[1,1,0,3]}, \
+{total:19,packs:[8,5,2],numpacks:[1,1,3]} \
+]
+def testProduct ()
+	is_passed = true
+	TEST_DATA.each do |test|
+
+		r= results(test[:total],test[:packs])
+		is_passed = (r==test[:numpacks]) && is_passed
+		if !is_passed
+			puts
+			puts "---"
+			print "#{test}-#{is_passed}-#{r}"
+			puts
+		end
+	end
+	return is_passed
+end
+
 def lastModResult(r, packs)
   packs.map do |p|
     q, r = r.divmod p
@@ -47,7 +71,7 @@ def canRollback?(reminder,packs,p,i)
   # can be mod if rollback from last pack
   beModIfRollBack = (reminder + packs[i - 1]) % p == 0
   # reminder less than divider and last pack are not times of current pack
-  lessAndNotModByLastPack = reminder < p && (packs[i-1] % p != 0)
+  lessAndNotModByLastPack = reminder < p
 
   if beModIfRollBack or lessAndNotModByLastPack
     true
@@ -56,45 +80,62 @@ def canRollback?(reminder,packs,p,i)
   end
 end
 
-def printResult(result = $num, code)
+def printResult(result, code, packs)
+  result = optimizeResult(packs)
   sum = 0
   count = 0
   result.reverse!.each_with_index do |r,i|
-    count += r
+    count += r * @products[code].keys[i]
     sum += r * @products[code].values[i]
     puts "#{r} x @#{@products[code].keys[i]}, $#{@products[code].values[i]}"
   end
-  puts "Total: #{count}, #{sum}"
+  puts "Total: #{count} #{code}, $#{sum.round(2)}"
 end
 
+def validCode?(code)
+  arraryCode = @products.keys
+  if arraryCode.delete(code) != nil
+    return true
+  else
+    return false
+  end
+end
+
+def optimizeResult(result = $num, packList)
+  reversedPackList = packList.reverse!
+  result.reverse!.each_with_index do |r,i|
+    if r * reversedPackList[i] == reversedPackList[i + 1]
+      result[i] = r - r
+      result[i+1] = r * reversedPackList[i] / reversedPackList[i + 1]
+    end
+  end
+  return result
+  #code
+end
 
 def results(num,packs)
   currentPackList = packs
   reminder = num
-
   packs.each_with_index do |p,i|
-
     cannotRollback = i <= 0 || $num[i - 1] <= 0
-
     if validMaxPack?(reminder,currentPackList)
-      # 能被当前 pack list 中所有数正好除尽
       $num << reminder / p
-      # print ">2 packs = #{currentPackList}, reminder = #{reminder} in TRUE\n"
       currentPackList = removeMaxPack(currentPackList)
       reminder = reminder % p
-      # print ">2 after reminder = #{reminder} in TRUE \n"
     else
       unless cannotRollback
         if canRollback?(reminder,packs,p,i)
+          puts "runs here"
           reminder = reminder + packs[i - 1]
           $num[i - 1] -= 1
         end
       end
-      $num << reminder / p    # 当前 Pack 的个数注入到数组中
+      $num << reminder / p    # push number of pack into $num
       reminder = reminder % p
       currentPackList = removeMaxPack(currentPackList)
     end
   end
+  # $num = optimizeResult(packs)
   # final reminder if it could use prepack or not
   return reminder.zero?
 end
