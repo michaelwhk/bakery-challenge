@@ -89,6 +89,7 @@ def optimizeResult(result, pack_list)
 end
 
 def results(num,packs)
+  packs = packs.dup
   $num = []
   current_pack_list = packs
   reminder = num
@@ -119,7 +120,7 @@ def results(num,packs)
 end
 
 
-# Greedy functions starts
+##################### Greedy functions starts ################################
 
 def testPrepack (nums,packs,total)
   # if the member of nums and packs mismatched

@@ -28,7 +28,7 @@ def testBakery ()
 		if !is_passed
 			error+=1
 			puts
-			puts "---"
+			puts "--- Error on Loop Bakery ---"
 			print "Passed: #{is_passed} - Expected: #{test} - ErrorOutput: #{r}"
 			puts
 		else
@@ -36,7 +36,7 @@ def testBakery ()
 		end
 	end
 	t=TEST_DATA.count
-  puts "---"
+  puts "--- Test result for Loop Bakery ---"
 	puts "Passed: #{passed}/#{t} Error: #{error}/#{t}"
 	return is_passed
 end
@@ -52,7 +52,7 @@ def testGreedy ()
 		if !is_passed
 			error+=1
 			puts
-			puts "---"
+			puts "--- Error on Greedy Bakery ---"
 			print "Passed: #{is_passed} - Expected: #{test} - ErrorOutput: #{r}"
 			puts
 		else
@@ -60,6 +60,7 @@ def testGreedy ()
 		end
 	end
 	t=TEST_DATA.count
+  puts "--- result Test for Greedy Bakery ---"
 	puts "Passed: #{passed}/#{t} Error: #{error}/#{t}"
 	return is_passed
 end
