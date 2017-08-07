@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
-require './func'
-require './datasource'
+require_relative 'func/func'
+require_relative './datasource'
 
 print "\n> Please input how many do you want. You can only input number, all symbols will be removed\n"
 qty = gets
